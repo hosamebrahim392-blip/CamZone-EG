@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CamZone Pro - منصة فنيين كاميرات المراقبة</title>
+    <style>
+        :root {
+            --bg-dark: #0a1128;
+            --bg-card: #1c2541;
+            --neon-orange: #ff6b35;
+            --neon-blue: #00b4d8;
+            --text-light: #f4f5f6;
+            --text-muted: #8ecae6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding-bottom: 70px;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: var(--bg-card);
+            padding: 15px;
+            text-align: center;
+            border-bottom: 2px solid var(--neon-orange);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.2);
+        }
+
+        header h1 {
+            color: var(--neon-orange);
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .tabs {
+            display: flex;
+            background-color: var(--bg-card);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px 10px;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        .tab-btn.active {
+            color: var(--neon-orange);
+            border-bottom: 3px solid var(--neon-orange);
+            background-color: rgba(255, 107, 53, 0.05);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 15px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            color: var(--neon-blue);
+            border-right: 3px solid var(--neon-blue);
+            padding-right: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--bg-dark);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 5px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            border-color: var(--neon-orange);
+            outline: none;
+        }
+
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .price-table th, .price-table td {
+            padding: 10px;
+            text-align: right;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .price-table th {
+            color: var(--neon-blue);
+        }
+
+        .price-table input {
+            width: 80px;
+            padding: 5px;
+            background-color: var(--bg-dark);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            text-align: center;
+            border-radius: 4px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--neon-orange);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-secondary {
+            background-color: var(--neon-blue);
+        }
+
+        /* لوحة الرسم */
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            overflow: auto;
+            background-color: #111a36;
+            border-radius: 8px;
+            border: 2px dashed rgba(255,255,255,0.1);
+            margin-bottom: 10px;
+        }
+
+        canvas {
+            display: block;
+            background-color: #111a36;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .tool-btn {
+            padding: 8px 12px;
+            background-color: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .tool-btn.active {
+            background-color: var(--neon-orange);
+            border-color: var(--neon-orange);
+        }
+
+        .summary-box {
+            background-color: rgba(0, 180, 216, 0.1);
+            border: 1px solid var(--neon-blue);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .summary-total {
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 6px;
+            font-weight: bold;
+            color: var(--neon-orange);
+            font-size: 1.1rem;
+        }
+
+        footer-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-card);
+            display: flex;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 1000;
+        }
+
+        .footer-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px 5px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .footer-item.active {
+            color: var(--neon-orange);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>CamZone EG 🛠️</h1>
+        <p>المنصة التفاعلية الذكية لفنيين ومؤسسات كاميرات المراقبة</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('planner-tab')">المخطط والكروكي 📐</button>
+        <button class="tab-btn" onclick="switchTab('calculator-tab')">حاسبة الباقات 💰</button>
+        <button class="tab-btn" onclick="switchTab('prices-tab')">تعديل الأسعار ⚙️</button>
+    </div>
+
+    <!-- تبويب المخطط -->
+    <div id="planner-tab" class="tab-content active">
+        <div class="toolbar">
+            <button class="tool-btn active" id="btn-move" onclick="setTool('move')">🖐️ تحريك ومطابقة</button>
+            <button class="tool-btn" id="btn-camera" onclick="setTool('camera')">📹 إضافة كاميرا</button>
+            <button class="tool-btn" id="btn-dvr" onclick="setTool('dvr')">📼 إضافة جهاز تسجيل</button>
+            <button class="tool-btn" id="btn-wire" onclick="setTool('wire')">⚡ شد سلك (كابل)</button>
+            <button class="tool-btn" id="btn-rotate" onclick="setTool('rotate')">🔄 تدوير الكاميرا</button>
+            <button class="tool-btn" style="background-color: #d90429;" onclick="clearCanvas()">🗑️ مسح الكل</button>
+        </div>
+
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">
+            💡 *تلميح للتدوير:* اختر أداة "تدوير الكاميرا" ثم اضغط وحرك إصبعك فوق الكاميرا لتوجه زاوية الرؤية التفاعلية 360 درجة.
+        </p>
+
+        <div class="canvas-container">
+            <canvas id="mainCanvas"></canvas>
+        </div>
+
+        <div class="summary-box">
+            <div class="summary-item">
+                <span>إجمالي الكاميرات بالمخطط:</span>
+                <span id="map-cam-count">0 كاميرات</span>
+            </div>
+            <div class="summary-item">
+                <span>إجمالي طول الكابلات المحسوب:</span>
+                <span id="map-wire-length">0 متر</span>
+            </div>
+            <div class="summary-total summary-item">
+                <span>التكلفة التقريبية من الرسم:</span>
+                <span id="map-total-cost">0 جنيه</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- تبويب الحاسبة -->
+    <div id="calculator-tab" class="tab-content">
+        <div class="card">
+            <h2>حاسبة الباقات والمقايسات الفورية</h2>
+            <div class="form-group">
+                <label>عدد الكاميرات المطلوبة:</label>
+                <input type="number" id="calc-cams" value="4" min="1" oninput="calculateInvoice()">
+            </div>
+            <div class="form-group">
+                <label>نوع نظام السيستم:</label>
+                <select id="calc-type" onchange="calculateInvoice()">
+                    <option value="analog">أنالوج عالي الدقة (HD Coaxial)</option>
+                    <option value="ip">شبكي متطور (IP System / PoE)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>طول السلك الإجمالي التقريبي (متر):</label>
+                <input type="number" id="calc-wires" value="50" min="0" oninput="calculateInvoice()">
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>الفاتورة التقديرية للعميل</h2>
